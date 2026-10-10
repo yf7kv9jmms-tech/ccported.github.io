@@ -28,8 +28,11 @@ export async function openGame(game: Game) {
     trackClick(game.gameID).catch((error) => {
         console.error("Failed to track click:", error);
     });
+    const playPath = window.location.origin.includes("amazonaws")
+        ? `/play.html?gameID=${encodeURIComponent(game.gameID)}`
+        : `/play?gameID=${encodeURIComponent(game.gameID)}`;
+    window.location.assign(playPath);
 }
-
 
 export async function trackClick(gameID: string): Promise<void> {
     try {
@@ -53,6 +56,7 @@ export async function trackClick(gameID: string): Promise<void> {
     } catch (error) {
         console.error("Failed to update click count:", error);
     }
+}
 }
 
 export function capitalizeWords(str: string): string {

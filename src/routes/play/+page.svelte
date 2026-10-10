@@ -10,6 +10,7 @@
     import type { Game } from "$lib/types/game.js";
     import { onMount } from "svelte";
     import { page } from "$app/state";
+    import { goto } from "$app/navigation";
     import {
         detectAdBlockEnabled,
         getCommitHash,
@@ -450,6 +451,7 @@
         bind:this={iframe}
         title={`Playing ${game.fName}`}
     ></iframe>
+    <button class="exit-game" onclick={() => goto("/")}>Exit game</button>
 {:else if error}
     <div class="container">
         <h2>Error</h2>
@@ -541,5 +543,14 @@
         padding: 0;
         overflow: hidden;
         z-index: 999; /* Ensure the iframe is on top */
+    }
+    .exit-game {
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        z-index: 1001;
+        margin: 0;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background-color: rgba(18, 28, 38, 0.92);
     }
 </style>
