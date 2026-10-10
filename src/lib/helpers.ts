@@ -19,15 +19,7 @@ export function formatNumber(num: number): string {
     return num.toLocaleString();
 }
 
-export async function openGame(game: Game) {
-    if (window.location.origin.includes("amazonaws")) {
-        window.open(`/play.html?gameID=${game.gameID}&r=t`, '_blank');
-    } else {
-        window.open(`/play?gameID=${game.gameID}&r=t`, '_blank');
-    }
-    trackClick(game.gameID).catch((error) => {
-        console.error("Failed to track click:", error);
-    });
+export function openGame(game: Game) {
     const playPath = window.location.origin.includes("amazonaws")
         ? `/play.html?gameID=${encodeURIComponent(game.gameID)}`
         : `/play?gameID=${encodeURIComponent(game.gameID)}`;
@@ -56,7 +48,6 @@ export async function trackClick(gameID: string): Promise<void> {
     } catch (error) {
         console.error("Failed to update click count:", error);
     }
-}
 }
 
 export function capitalizeWords(str: string): string {
