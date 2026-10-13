@@ -1,4 +1,4 @@
-import { Servers, type Server, AHosts, findServers, findSingleServer, findAHosts, setAHosts } from "./types/servers.js";
+import { Servers, type Server, findServers, findSingleServer } from "./types/servers.js";
 import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
 import { fromCognitoIdentityPool, type CognitoIdentityCredentials } from "@aws-sdk/credential-provider-cognito-identity";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
@@ -77,13 +77,11 @@ export const SessionState = {
 
 type StateType = {
     servers: typeof Servers;
-    aHosts: typeof AHosts;
     currentServer: Server;
     homeView: "grid" | "list";
     pinnedGames: string[];
     seenNotifications: string[];
     games: Game[];
-    isAHost: () => boolean;
     localPlays: number;
 };
 
@@ -92,7 +90,7 @@ function saveState() {
     if (SessionState.ssr) return;
 
     // Things we don't want to save
-    const { servers, aHosts, games, isAHost, ...serializable } = State;
+    const { servers, games, ...serializable } = State;
     localStorage.setItem("ccported_state", JSON.stringify(serializable));
 }
 
@@ -110,13 +108,11 @@ function createState(initial: StateType): StateType {
 
 export const State = createState({
     servers: Servers,
-    aHosts: AHosts,
     currentServer: Servers[0],
     homeView: "grid",
     pinnedGames: [],
     games: [],
     seenNotifications: [],
-    isAHost: () => (AHosts.some((h): boolean => browser && h.hostname === new URL(page.url).hostname)),
     localPlays: 0
 });
 
@@ -206,32 +202,7 @@ export async function initializeTooling() {
     if (!server) {
         console.error("No available servers found.");
     }
-    const aHosts = await findAHosts();
-    State.aHosts = aHosts;
-    setAHosts(aHosts);
     // State.currentServer is now managed by findServer()
-
-    if (!State.isAHost()) {
-        aHosts.forEach(async (host) => {
-            const result = await testSingleServer({
-                name: `AHOST ${host.hostname}`,
-                hostname: host.hostname,
-                path: "/",
-                priority: 1,
-                protocol: browser && window.isSecureContext ? "https" : "http"
-            });
-            console.log(
-                `[R][CardGrid][Mount] Tested host ${host.hostname}:`,
-                result,
-            );
-            if (result.success) {
-                // Reload the page to try again with the working ad host
-                const isIpAddress = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host.hostname);
-                const protocol = isIpAddress ? 'http' : (window.isSecureContext ? 'https' : 'http');
-                // window.location.href = new URL(`${protocol}://${host.hostname}${window.location.pathname}${window.location.search}`).toString();
-            }
-        });
-    }
 
     const credentials = await initializeUnauthenticated();
     const dynamoDBClient = new DynamoDBClient({

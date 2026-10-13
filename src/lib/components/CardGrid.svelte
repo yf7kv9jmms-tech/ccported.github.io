@@ -1,14 +1,12 @@
 <script lang="ts">
     import {
         decamelize,
-        getCommitHash,
         openGame,
     } from "$lib/helpers.js";
     import {
         initializeTooling,
         SessionState,
         State,
-        testSingleServer,
     } from "$lib/state.js";
     import type { Game } from "$lib/types/game.js";
     import { onMount } from "svelte";
@@ -183,10 +181,7 @@
     }
 
     const searchRegex = /[a-z0-9]/i;
-    let commitHash = $state("");
-
     onMount(async () => {
-        commitHash = (await getCommitHash()) || "";
         await initializeTooling();
 
         games = await loadGames();
@@ -289,7 +284,7 @@
                         onclick={() => openGame(result.game)}
                     >
                         <img
-                            src={`https://cdn.jsdelivr.net/gh/ccported/games@${commitHash}/${result.game.gameID}${result.game.thumbPath}`}
+                            src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${result.game.gameID}${result.game.thumbPath}`}
                             alt={result.game.fName}
                         />
                         <div style="flex: 1;">
@@ -379,7 +374,6 @@
                 <GameCard
                     {game}
                     {i}
-                    {commitHash}
                     tagClick={(tag: string) => {
                         toggleSearch(decamelize(tag));
                     }}

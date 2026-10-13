@@ -28,7 +28,7 @@
             }
         }
         alert(
-            "All data delivery networks seem to be blocked. This will not work. If you think this is an error contact me though the instagram, discord, or email me at sojscoder@gmail.com or ccported@ccported.click",
+            "All data delivery networks seem to be blocked. If you think this is an error, email ccported@ccported.click.",
         );
     }
 

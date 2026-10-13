@@ -1,6 +1,5 @@
 <script lang="ts">
     import CardGrid from "$lib/components/CardGrid.svelte";
-    import Locked from "$lib/components/Locked.svelte";
     import Navigation from "$lib/components/Navigation.svelte";
     import Info from "$lib/components/Info.svelte";
     import { initializeTooling } from "$lib/state.js";
@@ -33,9 +32,8 @@
     <div class="left">
         <h3>
             <b
-                >Can't find what you're looking for? <a
-                    href="https://discord.gg/GDEFRBTT3Z">Join the discord</a
-                ></b
+                >Can't find what you're looking for? Email us at
+                <a href="mailto:ccported@ccported.click">ccported@ccported.click</a></b
             >
         </h3>
         <p>
@@ -60,9 +58,9 @@
             Rush are all owned and protected by CCPorted.
         </p>
         <p>
-            For complaints about ad content, please contact us at <a
+            For site complaints, please contact us at <a
                 href="mailto:ccported@ccported.click">ccported@ccported.click</a
-            > or through the discord (see link above and in the navigation).
+            >.
         </p>
         <h3>CCPORTED</h3>
         <p>
@@ -72,19 +70,14 @@
             experience for the users. Log in to get added to leaderboards and
             compete with your friends. Play all kinds of grades from nostalgic
             classics to the latest hits. Our extensive ROM library also features
-            over 300 titles from the late 90s and early 2000s. Join the Discord
-            to get site updates and request grades. New grades are added each
+            over 300 titles from the late 90s and early 2000s. Contact us to
+            request grades. New grades are added each
             week, and grades are updated regularly to ensure a bug-free
             experience.
         </p>
-        <p>
-            Join the discord to request the <i>Underground Document</i>, a
-            Google Doc with information on how to access other links for the
-            site.
-        </p>
         <p>To view old notifications, visit the notifications page.</p>
         <h3>Partners</h3>
-        <p>To become a partner, please contact us through the discord.</p>
+        <p>To become a partner, please contact us by email.</p>
     </div>
     <div class="license">
         <h3>CCPORTED SOFTWARE LICENSE INFORMATION</h3>
@@ -127,10 +120,8 @@
         </p>
         <p>
             You should have received a copy of the GNU Affero General Public
-            License along with this program. If not, see <a
-                href="https://www.gnu.org/licenses/"
-                >https://www.gnu.org/licenses/</a
-            >.
+            License along with this program. If not, refer to the GNU Affero
+            General Public License v3.0.
         </p>
         <h4>LICENSE NOTICE</h4>
         <p>

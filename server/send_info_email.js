@@ -71,9 +71,7 @@ const emailHTML = `
         <p>You are getting this email becuase you have previously created a CCPorted account.</p>
         <p>Many people have been saying that none of the links have been working for them. In order to fix this, I have created a new "underground" document. This document should be shared to students only, and it will not be visible on any public pages.</p>
         <p>Share it with all of your friends, so that everyone can have access to the grades.</p>
-        <p>Last but not least, remember to <a href="https://discord.com/invite/GDEFRBTT3Z">join the Discord</a></p>
-
-        <p>Here is the link: <a href = "https://docs.google.com/document/d/1-mXdD-aplqeTUOwv41YpcxqU-VwurYxsIZPAHXSYTzY/edit?tab=t.0">CCPorted Underground Doc</a></p>
+        <p>Last but not least, check the site for updates.</p>
     </div>
 </body>
 </html>
@@ -85,9 +83,7 @@ You are getting this email becuase you have previously created a CCPorted accoun
 Many people have been saying that none of the links have been working for them. In order to fix this, I have created a new "underground" document. This document should be shared to students only, and it will not be visible on any public pages.
 Share it with all of your friends, so that everyone can have access to the grades.
 
-Last but not least, remember to join the Discord: https://discord.com/invite/GDEFRBTT3Z
-
-Here is the link: https://docs.google.com/document/d/1-mXdD-aplqeTUOwv41YpcxqU-VwurYxsIZPAHXSYTzY/edit?tab=t.0
+Last but not least, check the site for updates.
 `
 
 async function sendEmails(recipients) {

@@ -31,7 +31,6 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 //             type: 'signup',
 //             email: email,
 //             options: {
-//                 emailRedirectTo: 'http://ccported.gitub.io/login'
 //             }
 //         })
 

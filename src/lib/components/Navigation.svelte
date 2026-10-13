@@ -6,12 +6,7 @@
     type Link = [string, string];
     let links = $state<Link[]>([
         ["Notifications", "/notifications"],
-        [
-            "Master Doc",
-            "https://docs.google.com/document/d/11yw7n2F84XOkAwpM8tF-ZYHESuus1Gg7dmJ-WJum1fk",
-        ],
         ["ROM Library", "/roms"],
-        ["Discord", "https://discord.gg/GDEFRBTT3Z"],
         ["Login", "/auth/login"],
     ]);
 
@@ -19,12 +14,7 @@
         if (typeof window !== "undefined" && window.origin.includes("amazonaws")) {
             links = [
                 ["Notifications", "/notifications"],
-                [
-                    "Master Doc",
-                    "https://docs.google.com/document/d/11yw7n2F84XOkAwpM8tF-ZYHESuus1Gg7dmJ-WJum1fk",
-                ],
                 ["ROM Library", "/roms.html"],
-                ["Discord", "https://discord.gg/GDEFRBTT3Z"],
             ]
         }
     });

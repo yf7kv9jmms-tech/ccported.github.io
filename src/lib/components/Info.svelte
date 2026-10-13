@@ -71,31 +71,6 @@
             {/each}
         </tbody>
     </table>
-    AHost: {State.isAHost()} (Loaded {State.aHosts.length})<br />
-    <table
-        style="width:100%; margin: 10px 0; border-collapse: collapse; font-size: 12px;"
-    >
-        <thead>
-            <tr>
-                <th style="border-bottom: 1px solid #ccc; text-align: left;"
-                    >AHost Hostname</th
-                >
-            </tr>
-        </thead>
-        <tbody>
-            {#each State.aHosts as h}
-                <tr>
-                    <td
-                        >{h.hostname}{h.hostname &&
-                        browser &&
-                        h.hostname == page.url.hostname
-                            ? " (Active)"
-                            : " (Inactive)"}</td
-                    >
-                </tr>
-            {/each}
-        </tbody>
-    </table>
     <br />
     Grades Loaded: {stateFulState.games.length} ({stateFulState.pinnedGames
         .length} pinned) - rendered {stateFulState.homeView}<br />

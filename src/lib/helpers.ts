@@ -81,15 +81,3 @@ export function getTimeBetween(date1: Date, date2: Date): string {
     return `${days}d ${remHours}h ${remMinutes}m ${remSeconds}s`;
 }
 
-
-export async function getCommitHash(): Promise<string> {
-    const apiRoute = "https://api.github.com/repos/ccported/games/commits/main";
-
-    const res = await fetch(apiRoute);
-
-    const data = await res.json();
-
-    const commitHash = data.sha || "";
-
-    return commitHash;
-}

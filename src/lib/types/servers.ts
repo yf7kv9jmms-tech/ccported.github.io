@@ -1,10 +1,5 @@
 import { SessionState } from "$lib/state.js";
 
-export interface AHost {
-    hostname: string;
-}
-
-
 export interface Server { 
     name: string;
     hostname: string;
@@ -14,15 +9,6 @@ export interface Server {
 }
 
 
-
-export let AHosts: AHost[] = [{
-    hostname: "ccported.github.io"
-}, {
-    hostname: "ccported.click"
-}];
-export function setAHosts(ahosts: AHost[]) {
-    AHosts = ahosts;
-}
 
 export const Servers: Server[] = [{
     name: "Charlie",
@@ -99,24 +85,10 @@ export const findSingleServer = async (): Promise<Server | null> => {
         return null;
     }
 };
-
 export const findServers = async (): Promise<Server[] | null> => {
     try {
-        const isSecureContext = typeof window !== "undefined" && window.isSecureContext;
-
-        // Define fetch URLs
         const localUrl = "/servers.txt";
-        const proxyUrl = "https://z67jfipy20.execute-api.us-west-2.amazonaws.com/prod/servers";
-
-        // Fetch both in parallel
-        const fetches = [
-            fetch(localUrl).catch(() => null),
-            // fetch(proxyUrl, {
-            //     mode: "cors"
-            // }).catch(() => null)
-        ];
-
-        const [localRes, proxyRes] = await Promise.all(fetches);
+        const localRes = await fetch(localUrl).catch(() => null);
 
         let servers: Server[] = [];
 
@@ -139,26 +111,6 @@ export const findServers = async (): Promise<Server[] | null> => {
             servers = servers.concat(localServers);
         }
 
-        // Parse proxy servers.txt (HTTP)
-        if (proxyRes && proxyRes.ok) {
-            const text = await proxyRes.text();
-            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-            const proxyServers: Server[] = lines.map((line, i) => {
-                if (line.startsWith("#")) return null;
-                if (!line.startsWith("<GAMES>")) return null;
-                const parts = line.split(/\s+/);
-                if (parts.length < 4) return null;
-                return {
-                    name: parts[2],
-                    hostname: parts[1],
-                    path: parts[3],
-                    priority: i + 1,
-                    protocol: "http"
-                };
-            }).filter(s => s !== null) as Server[];
-            servers = servers.concat(proxyServers);
-        }
-
         if (servers.length === 0) {
             return null;
         }
@@ -168,20 +120,3 @@ export const findServers = async (): Promise<Server[] | null> => {
     }
 };
 
-
-export const findAHosts = async (): Promise<AHost[]> => {
-    const url = typeof window !== "undefined" ? `${window.location.origin}/ahosts.txt` : "https://ccgstatic.com/ahosts.txt";
-    const response = await fetch(url);
-    if (!response.ok) {
-        return AHosts;
-    }
-    const text = await response.text();
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    const ahosts: AHost[] = lines.map((line) => {
-        const parts = line.split(',').map(p => p.trim());
-        return {
-            hostname: parts[0]
-        };
-    });
-    return ahosts;
-}

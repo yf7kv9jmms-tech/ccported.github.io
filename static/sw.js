@@ -11,10 +11,8 @@ let ALLOWED_DOMAINS = [
 
 const BLACKLIST = [
     "storage.ko-fi.com",
-    "www.google-analytics.com",
     "cognito-identity.us-west-2.amazonaws.com",
     "dynamodb.us-west-2.amazonaws.com",
-    "googletagmanager.com"
     // Note: removed amazonaws.com from blacklist since you have AWS domains in servers.txt
 ];
 

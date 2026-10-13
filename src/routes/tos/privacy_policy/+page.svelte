@@ -19,10 +19,7 @@
     <section>
       <h2>Information We Collect</h2>
       <h3>Account Information</h3>
-      <p>When you create an account, we collect and store your email address, name, password, and profile picture. Accounts are managed using AWS Cognito. See the <a href="https://aws.amazon.com/privacy/">AWS Privacy Policy</a> for information about AWS data practices.</p>
-
-      <h3>Analytics and Usage Data</h3>
-      <p>We use Google Analytics to understand site usage. It may collect standard internet log and visit information, including pages visited, time spent on pages, browser and device information, IP address, and approximate geographic location. See <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.</p>
+      <p>When you create an account, we collect and store your email address, name, password, and profile picture. Accounts are managed using AWS Cognito.</p>
 
       <h3>Activity Tracking</h3>
       <p>When you are logged in, we collect playtime statistics, page visit counts, and message counts across channels. We also maintain anonymous grade popularity statistics. Grade clicks increment a global counter and are not associated with individual users.</p>

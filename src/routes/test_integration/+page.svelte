@@ -11,7 +11,6 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import {
-        getCommitHash,
         trackClick,
     } from "$lib/helpers.js";
     import { browser } from "$app/environment";
@@ -60,7 +59,6 @@
     let loading = $state(true);
     let iframe = $state(null as null | HTMLIFrameElement);
     let application: any = null;
-    let commitHash = $state("");
 
     // Manual src chooser for integration testing
     let chosenSrc = $state<string | null>(null);

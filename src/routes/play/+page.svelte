@@ -11,10 +11,7 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import { goto } from "$app/navigation";
-    import {
-        getCommitHash,
-        trackClick,
-    } from "$lib/helpers.js";
+    import { trackClick } from "$lib/helpers.js";
     import { browser } from "$app/environment";
     import type { Tokens } from "$lib/authentication.js";
 
@@ -61,7 +58,6 @@
     let loading = $state(true);
     let iframe = $state(null as null | HTMLIFrameElement);
     let application: any = null;
-    let commitHash = $state("");
     onMount(async () => {
         await initializeTooling();
         await fetchGameData();
@@ -80,7 +76,6 @@
             url.searchParams.delete("r");
             window.history.replaceState({}, document.title, url.toString());
         }
-        commitHash = await getCommitHash();
     });
 
     function updateIframe(server: {
@@ -306,18 +301,11 @@
     <div class="play">
         <h2>{game.fName}</h2>
         <p>{game.description}</p>
-        {#if commitHash.length > 0}
-            <img
-                class="img"
-                alt={`Cover art for ${game.fName}`}
-                src="https://cdn.jsdelivr.net/gh/ccported/games@{commitHash}/{game.gameID}{game.thumbPath}"
-            />
-            <div style="color: #aaa;">
-                Build: {commitHash.slice(0, 7)}...{commitHash.slice(-7)}
-            </div>
-        {:else}
-            <div class="img"></div>
-        {/if}
+        <img
+            class="img"
+            alt={`Cover art for ${game.fName}`}
+            src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}${game.thumbPath}`}
+        />
         <button onclick={play}>Play Grades</button>
     </div>
     <iframe

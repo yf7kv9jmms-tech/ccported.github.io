@@ -9,12 +9,10 @@
         game,
         i,
         tagClick,
-        commitHash,
     }: {
         game: Game;
         i: number;
         tagClick: (tag: string) => void;
-        commitHash: string;
     } = $props();
 
     const gameID = $derived(game.gameID);
@@ -27,7 +25,7 @@
     const updatedTimestamp = $derived(game.updatedTimestamp ?? 0);
 
     const normalThumbPath = $derived(
-        `https://cdn.jsdelivr.net/gh/ccported/games@${commitHash}/${game.gameID}${game.thumbPath}`,
+        `${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}${game.thumbPath}`,
     );
     let starred = $state(false);
     $effect(() => {
