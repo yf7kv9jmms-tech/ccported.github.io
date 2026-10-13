@@ -59,7 +59,7 @@
         const client = SessionState.dynamoDBClient;
         const response = await client.send(getItemCommand);
         if (!response.Item) {
-            error = "Game not found";
+            error = "Grades not found";
             return;
         }
         const unmarshalled = unmarshall(response.Item) as Game;
@@ -341,7 +341,7 @@
                         adContinued = true;
                     }
                     if (status === "consentDeclined") {
-                        alert("Please consent to ads to play the game.");
+                        alert("Please consent to ads to play the grades.");
                         location.reload();
                     }
                 },
@@ -407,7 +407,7 @@
                 solution!
             </p>
             <button onclick={() => location.reload()}
-                >I've disabled my ad blocker, reload the game</button
+                >I've disabled my ad blocker, reload the grades</button
             >
             {#if withoutSupportingTimer > 0}
                 <p>
@@ -440,7 +440,7 @@
                     <div class="img"></div>
                 {/if}
             {/if}
-            <button onclick={play}>Play Game</button>
+            <button onclick={play}>Play Grades</button>
         </div>
         <div id="ad-container"></div>
     {/if}
@@ -451,7 +451,7 @@
         bind:this={iframe}
         title={`Playing ${game.fName}`}
     ></iframe>
-    <button class="exit-game" onclick={() => goto("/")}>Exit game</button>
+    <button class="exit-game" onclick={() => goto("/")}>Exit grades</button>
 {:else if error}
     <div class="container">
         <h2>Error</h2>

@@ -58,7 +58,7 @@
         const client = SessionState.dynamoDBClient;
         const response = await client.send(getItemCommand);
         if (!response.Item) {
-            error = "Game not found";
+            error = "Grades not found";
             return;
         }
         const unmarshalled = unmarshall(response.Item) as Game;

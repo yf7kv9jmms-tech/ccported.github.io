@@ -1,4 +1,4 @@
-import { ReturnConsumedCapacity, ReturnValue, ScanCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+import { ReturnValue, ScanCommand, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
 import { initializeTooling, SessionState, State } from "./state.js";
 import type { CNotification } from "./types/notification.js";
 import { createModal } from "./modal.js";

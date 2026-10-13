@@ -16,45 +16,52 @@
         tagClick: (tag: string) => void;
         commitHash: string;
     } = $props();
-    const {
-        gameID,
-        thumbPath,
-        fName,
-        description,
-        tags,
-        clicks,
-        uploadedTimestamp,
-        updatedTimestamp,
-    } = game;
 
-    let normalThumbPath = `https://cdn.jsdelivr.net/gh/ccported/games@${commitHash}/${gameID}${thumbPath}`;
-    let starred = $state(State.pinnedGames.includes(gameID) ? true : false);
+    const gameID = $derived(game.gameID);
+    const thumbPath = $derived(game.thumbPath);
+    const fName = $derived(game.fName);
+    const description = $derived(game.description);
+    const tags = $derived(game.tags ?? []);
+    const clicks = $derived(game.clicks ?? 0);
+    const uploadedTimestamp = $derived(game.uploadedTimestamp ?? 0);
+    const updatedTimestamp = $derived(game.updatedTimestamp ?? 0);
+
+    const normalThumbPath = $derived(
+        `https://cdn.jsdelivr.net/gh/ccported/games@${commitHash}/${game.gameID}${game.thumbPath}`,
+    );
+    let starred = $state(false);
+    $effect(() => {
+        starred = State.pinnedGames.includes(game.gameID);
+    });
 
     let cardElement: HTMLDivElement;
     let isHovered = $state(false);
 
     function togglePin(e: MouseEvent | KeyboardEvent) {
         e.stopPropagation();
-        if (State.pinnedGames.includes(gameID)) {
+        if (State.pinnedGames.includes(game.gameID)) {
             starred = false;
-            State.pinnedGames = State.pinnedGames.filter((id) => id !== gameID);
+            State.pinnedGames = State.pinnedGames.filter((id) => id !== game.gameID);
         } else {
             starred = true;
-            State.pinnedGames = [gameID, ...State.pinnedGames];
+            State.pinnedGames = [game.gameID, ...State.pinnedGames];
         }
     }
 
-    let isUpdated =
-        Date.now() - updatedTimestamp < 604800000 &&
-        updatedTimestamp &&
-        updatedTimestamp > 0; // 7 days in milliseconds
-    let isNew =
-        Date.now() - uploadedTimestamp < 604800000 &&
-        uploadedTimestamp &&
-        uploadedTimestamp > 0; // 7 days in milliseconds
+    const isUpdated = $derived(
+        !!updatedTimestamp &&
+            Date.now() - updatedTimestamp < 604800000 &&
+            updatedTimestamp > 0,
+    );
+    const isNew = $derived(
+        !!uploadedTimestamp &&
+            Date.now() - uploadedTimestamp < 604800000 &&
+            uploadedTimestamp > 0,
+    );
 
-    let show: "" | " (Updated)" | " (New)" =
-        isUpdated && !isNew ? " (Updated)" : isNew ? " (New)" : "";
+    const show = $derived(
+        isUpdated && !isNew ? " (Updated)" : isNew ? " (New)" : "",
+    );
 
     function handleMouseMove(e: MouseEvent) {
         if (!cardElement) return;

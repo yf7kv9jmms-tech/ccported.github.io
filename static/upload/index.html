@@ -56,20 +56,20 @@
     <pre id="email"></pre>
   </div>
   <details>
-    <summary>Add a Game</summary>
-    <h1>Add a Game</h1>
-    <h3>If the game is already in the system, add ID and hit load.</h3>
-    <label>Game ID:</label>
+    <summary>Add a Grades</summary>
+    <h1>Add a Grades</h1>
+    <h3>If the grades is already in the system, add ID and hit load.</h3>
+    <label>Grades ID:</label>
     <input type="text" id="gameId" /><br />
     <button id="load">Load</button>
     <br />
     <label>ZIP File:</label>
     <input type="file" id="zipFile" /><br />
 
-    <label>Game Name:</label>
+    <label>Grades Name:</label>
     <input type="text" id="name" /><br />
 
-    <label>Force Key (Update existing game):</label>
+    <label>Force Key (Update existing grades):</label>
     <input type="text" id="forceKey" /><br />
 
     <label>Description:</label>
@@ -367,7 +367,7 @@
           document.getElementById("forceKey").value = gameID;
           document.getElementById("thumbPath").value = data.Item.thumbPath;
         } else {
-          alert("Game not found.");
+          alert("Grades not found.");
           document.getElementById("name").value = "";
           document.getElementById("description").value = "";
           document.getElementById("thumbPath").placeholder = "/thumb.jpg";

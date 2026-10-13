@@ -27,7 +27,7 @@
         <li>Your name</li>
         <li>Your password (which is always encrypted)</li>
         <li>Your profile picture</li>
-        <li>Tracking information, such as the time spent playing a game.</li>
+        <li>Tracking information, such as the time spent playing a grades.</li>
       </ul>
       <p>
         Accounts are managed using AWS Cognito. For further information,
@@ -60,14 +60,14 @@
       <h3>Activity Tracking</h3>
       <p>When you're logged in, we collect:</p>
       <ul>
-        <li>Game playtime statistics</li>
+        <li>Grades playtime statistics</li>
         <li>Page visit counts</li>
         <li>Message count across all channels</li>
       </ul>
       <h3>Anonymous Statistics</h3>
-      <p>We maintain anonymous game popularity statistics:</p>
+      <p>We maintain anonymous grades popularity statistics:</p>
       <ul>
-        <li>Each game click increments a global counter</li>
+        <li>Each grades click increments a global counter</li>
         <li>This data is not associated with individual users</li>
         <li>It's stored as a simple numeric value in our database</li>
       </ul>

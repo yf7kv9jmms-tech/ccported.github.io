@@ -62,7 +62,7 @@
     <title>CCPorted</title>
     <meta
         name="description"
-        content="Hundreds of games available to play instantly, for free, unblocked, in your browser."
+        content="Hundreds of grades available to play instantly, for free, unblocked, in your browser."
     />
 </svelte:head>
 
@@ -82,8 +82,8 @@
             >
         </h3>
         <p>
-            CCPorted is not affiliated with or endorsed by any game developers
-            or publishers. All games are property of their respective owners*
+            CCPorted is not affiliated with or endorsed by any grades developers
+            or publishers. All grades are property of their respective owners*
         </p>
         <p>
             DMCA Requests can be sent to <a
@@ -109,15 +109,15 @@
         </p>
         <h3>CCPORTED</h3>
         <p>
-            CCPorted is the greatest place to play video games. The CCPorted
-            team parses through hundreds of games and only adds the
-            highest-quality games to our library, ensuring a high quality gaming
+            CCPorted is the greatest place to play video grades. The CCPorted
+            team parses through hundreds of grades and only adds the
+            highest-quality grades to our library, ensuring a high quality grading
             experience for the users. Log in to get added to leaderboards and
-            compete with your friends. Play all kinds of games from nostalgic
+            compete with your friends. Play all kinds of grades from nostalgic
             classics to the latest hits. Our extensive ROM library also features
             over 300 titles from the late 90s and early 2000s. Join the Discord
-            to get site updates and request games. New games are added each
-            week, and games are updated regularly to ensure a bug-free
+            to get site updates and request grades. New grades are added each
+            week, and grades are updated regularly to ensure a bug-free
             experience.
         </p>
         <p>

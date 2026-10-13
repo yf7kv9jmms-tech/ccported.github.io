@@ -5,9 +5,6 @@ export const csr = true;
 
 import { createUserManager } from '$lib/authentication.js';
 import { SessionState } from '$lib/state.js';
-import { create } from 'domain';
-import { page } from '$app/state';
-import { UserManager } from 'oidc-client-ts';
 
 const TOKEN_STORAGE_KEY = 'ccported_tokens';
 
@@ -20,7 +17,7 @@ type StoredTokens = {
 
 export async function load() {
 	// This runs in the browser only (ssr=false)
-	const usernManager = createUserManager(page.url.origin);
+	const usernManager = createUserManager(window.location.origin);
 	try {
 		// Complete the sign-in redirect flow and obtain the user
 		const user = await usernManager.signinCallback(window.location.href);
