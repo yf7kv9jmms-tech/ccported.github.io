@@ -84,7 +84,7 @@
                 });
         }
         console.log(
-            `[R][CardGrid][getSortedGames] Sorted games by ${sortType}, found ${sorted.length} games.`,
+            `[R][CardGrid][getSortedGames] Sorted grades by ${sortType}, found ${sorted.length} grades.`,
         );
         return sorted;
     }
@@ -427,7 +427,7 @@
                             <ins
                                 class="eas6a97888e2"
                                 data-zoneid="5721174"
-                                data-keywords="gaming,games,flash,retro,arcade,html,unblocked,video,fun,entertainment"
+                                data-keywords="grading,grades,flash,retro,arcade,html,unblocked,video,fun,entertainment"
                             ></ins>
                             <script>
                                 (AdProvider = window.AdProvider || []).push({

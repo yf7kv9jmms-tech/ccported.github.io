@@ -103,7 +103,7 @@
         </tbody>
     </table>
     <br />
-    Games Loaded: {stateFulState.games.length} ({stateFulState.pinnedGames
+    Grades Loaded: {stateFulState.games.length} ({stateFulState.pinnedGames
         .length} pinned) - rendered {stateFulState.homeView}<br />
     Version: {version}<br />
     Logged In: {stateFulSessionState.loggedIn}<br />

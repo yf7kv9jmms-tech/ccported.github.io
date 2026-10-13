@@ -7,7 +7,6 @@
     type Link = [string, string];
     let links = $state<Link[]>([
         ["Notifications", "/notifications"],
-        ["Tab Cloaker", "/tab-cloaker"],
         [
             "Master Doc",
             "https://docs.google.com/document/d/11yw7n2F84XOkAwpM8tF-ZYHESuus1Gg7dmJ-WJum1fk",
@@ -21,7 +20,6 @@
         if (typeof window !== "undefined" && window.origin.includes("amazonaws")) {
             links = [
                 ["Notifications", "/notifications"],
-                ["Tab Cloaker", "/tab-cloaker.html"],
                 [
                     "Master Doc",
                     "https://docs.google.com/document/d/11yw7n2F84XOkAwpM8tF-ZYHESuus1Gg7dmJ-WJum1fk",

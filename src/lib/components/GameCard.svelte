@@ -106,7 +106,7 @@
     <button
         type="button"
         class="star-icon"
-        aria-label="Pin game"
+        aria-label="Pin grade"
         class:starred
         onclick={togglePin}
         onkeydown={(e) => {
@@ -119,7 +119,7 @@
         class="card {State.homeView}"
         class:hovered={isHovered}
         id={gameID}
-        aria-label="Open game"
+        aria-label="Open grade"
         onclick={() => {
             // navigator.clipboard.writeText(gameID);
             openGame(game);
