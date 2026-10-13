@@ -10,9 +10,7 @@ let ALLOWED_DOMAINS = [
 ];
 
 const BLACKLIST = [
-    "googlesyndication.com",
     "storage.ko-fi.com",
-    "monu.delivery",
     "www.google-analytics.com",
     "cognito-identity.us-west-2.amazonaws.com",
     "dynamodb.us-west-2.amazonaws.com",

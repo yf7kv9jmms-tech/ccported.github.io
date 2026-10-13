@@ -11,21 +11,14 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import {
-        detectAdBlockEnabled,
         getCommitHash,
         trackClick,
     } from "$lib/helpers.js";
     import { browser } from "$app/environment";
-    import { initializeAds } from "$lib/adSlotConfig.js";
-    import Ad from "$lib/components/Ad.svelte";
     import type { Tokens } from "$lib/authentication.js";
 
     let game: Game | null = $state(null);
-    let adblock = $state(false);
     let error: string | null = $state(null);
-    let withoutSupportingTimer = $state(15);
-    let continued = $state(false);
-    let isAHost = $state(true);
 
     async function fetchGameData() {
         console.log("[R][PLAY][fetchGameData] Fetching game data");
@@ -39,7 +32,6 @@
             error = "Missing gameID query parameter";
             return;
         }
-        isAHost = State.isAHost();
         const dbparams = {
             TableName: "games_list",
             Key: {
@@ -64,22 +56,11 @@
         const unmarshalled = unmarshall(response.Item) as Game;
         game = unmarshalled;
         loading = false;
-        adblock = await detectAdBlockEnabled();
-        console.log("[R][PLAY][fetchGameData] Adblock detected:", adblock);
     }
     let loading = $state(true);
     let iframe = $state(null as null | HTMLIFrameElement);
     let application: any = null;
-    let adContinued = $state(false);
     let commitHash = $state("");
-
-    let adsEnabled = $state(false);
-    let adBlock = $state(false);
-    let adSlots = $state<{
-        sidebar: string;
-        grid: string;
-        footer: string;
-    } | null>(null);
 
     // Manual src chooser for integration testing
     let chosenSrc = $state<string | null>(null);
@@ -301,33 +282,6 @@
     <title>{chosenSrc ? `Testing ${chosenSrc}` : "Integration Test"} | CCPorted</title>
 </svelte:head>
 
-{#if adblock && !continued && isAHost && adContinued}
-    <div class="container">
-        <div class="adblock-warning">
-            <h2>Ad Blocker Detected</h2>
-            <p>
-                CCPorted relies on ads to keep the lights on. Please consider
-                disabling your ad blocker for this site.
-            </p>
-            <p>
-                Only 5% of users have disabled their ad blocker. Be part of the
-                solution!
-            </p>
-            <button onclick={() => location.reload()}
-                >I've disabled my ad blocker, reload the game</button
-            >
-            {#if withoutSupportingTimer > 0}
-                <p>
-                    You can continue in {withoutSupportingTimer} seconds...
-                </p>
-            {:else}
-                <button onclick={() => (continued = true)}
-                    >Continue without supporting us</button
-                >
-            {/if}
-        </div>
-    </div>
-{/if}
 {#if chosenSrc}
     <iframe
         src={chosenSrc}
@@ -348,10 +302,6 @@
     </div>
 {/if}
 
-{#if adsEnabled && adSlots}
-    <Ad slotId={adSlots.footer} />
-{/if}
-
 <style>
     .container {
         position: fixed;
@@ -363,25 +313,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 1000;
-    }
-    button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        display: block;
-        margin-top: 10px;
-    }
-    .adblock-warning {
-        background-color: white;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         z-index: 1000;
     }
     iframe {

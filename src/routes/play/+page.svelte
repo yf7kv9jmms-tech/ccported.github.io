@@ -12,21 +12,14 @@
     import { page } from "$app/state";
     import { goto } from "$app/navigation";
     import {
-        detectAdBlockEnabled,
         getCommitHash,
         trackClick,
     } from "$lib/helpers.js";
     import { browser } from "$app/environment";
-    import { initializeAds } from "$lib/adSlotConfig.js";
-    import Ad from "$lib/components/Ad.svelte";
     import type { Tokens } from "$lib/authentication.js";
 
     let game: Game | null = $state(null);
-    let adblock = $state(false);
     let error: string | null = $state(null);
-    let withoutSupportingTimer = $state(15);
-    let continued = $state(false);
-    let isAHost = $state(true);
 
     async function fetchGameData() {
         console.log("[R][PLAY][fetchGameData] Fetching game data");
@@ -40,7 +33,6 @@
             error = "Missing gameID query parameter";
             return;
         }
-        isAHost = State.isAHost();
         const dbparams = {
             TableName: "games_list",
             Key: {
@@ -65,22 +57,11 @@
         const unmarshalled = unmarshall(response.Item) as Game;
         game = unmarshalled;
         loading = false;
-        adblock = await detectAdBlockEnabled();
-        console.log("[R][PLAY][fetchGameData] Adblock detected:", adblock);
     }
     let loading = $state(true);
     let iframe = $state(null as null | HTMLIFrameElement);
     let application: any = null;
-    let adContinued = $state(false);
     let commitHash = $state("");
-
-    let adsEnabled = $state(false);
-    let adBlock = $state(false);
-    let adSlots = $state<{
-        sidebar: string;
-        grid: string;
-        footer: string;
-    } | null>(null);
     onMount(async () => {
         await initializeTooling();
         await fetchGameData();
@@ -100,20 +81,6 @@
             window.history.replaceState({}, document.title, url.toString());
         }
         commitHash = await getCommitHash();
-        if (adblock) {
-            const interval = setInterval(() => {
-                if (withoutSupportingTimer > 0) {
-                    withoutSupportingTimer -= 1;
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1000);
-        } else {
-            (async () => {
-                if (!browser) return;
-                ({ adBlock, adsEnabled, adSlots } = await initializeAds());
-            })();
-        }
     });
 
     function updateIframe(server: {
@@ -302,61 +269,6 @@
     });
 
     function play() {
-        console.log("[R][PLAY][play] Play button clicked");
-        console.log(
-            "[R][PLAY][play] Dev mode:",
-            localStorage.getItem("devMode"),
-        );
-        if (localStorage.getItem("devMode") == "true") {
-            const options = {
-                apiKey: "193de488-c5ba-461a-8ccf-8309cbc721a2", // Replace with your actual API key
-                injectionElementId: "ad-container", // This is the ID of the div from step 2.
-                adStatusCallbackFn: (
-                    status:
-                        | "allAdsCompleted" // finish reason
-                        | "click" // finish reason
-                        | "complete" // finish reason
-                        | "firstQuartile"
-                        | "loaded"
-                        | "midpoint"
-                        | "paused"
-                        | "started"
-                        | "thirdQuartile"
-                        | "skipped" // finish reason
-                        | "manuallyEnded" // finish reason
-                        | "thankYouModalClosed" // finish reason
-                        | "consentDeclined",
-                ) => {
-                    // This is how you can listen for ad statuses (more in Step 4)
-                    console.log("OUTSIDE Ad status: ", status);
-                    const finishReasons = [
-                        "allAdsCompleted",
-                        "click",
-                        "complete",
-                        "skipped",
-                        "manuallyEnded",
-                        "thankYouModalClosed",
-                    ];
-                    if (finishReasons.includes(status)) {
-                        adContinued = true;
-                    }
-                    if (status === "consentDeclined") {
-                        alert("Please consent to ads to play the grades.");
-                        location.reload();
-                    }
-                },
-                adErrorCallbackFn: (error: any) => {
-                    // This is how you can listen for errors (more in Step 4)
-                    console.log("Error: ", error.getError().data);
-                    adContinued = true;
-                },
-            };
-
-            (window as any).initializeAndOpenPlayer(options);
-        } else {
-            adContinued = true;
-        }
-
         if (iframe) {
             iframe.focus();
             refocus();
@@ -388,62 +300,26 @@
     <title>
         {game ? `Playing ${game.fName}` : "Loading..."} | CCPorted
     </title>
-    <script
-        type="text/javascript"
-        src="https://cdn.applixir.com/applixir.app.v6.0.1.js"
-    ></script>
 </svelte:head>
 
-{#if adblock && !continued && isAHost && adContinued}
-    <div class="container">
-        <div class="adblock-warning">
-            <h2>Ad Blocker Detected</h2>
-            <p>
-                CCPorted relies on ads to keep the lights on. Please consider
-                disabling your ad blocker for this site.
-            </p>
-            <p>
-                Only 5% of users have disabled their ad blocker. Be part of the
-                solution!
-            </p>
-            <button onclick={() => location.reload()}
-                >I've disabled my ad blocker, reload the grades</button
-            >
-            {#if withoutSupportingTimer > 0}
-                <p>
-                    You can continue in {withoutSupportingTimer} seconds...
-                </p>
-            {:else}
-                <button onclick={() => (continued = true)}
-                    >Continue without supporting us</button
-                >
-            {/if}
-        </div>
-    </div>
-{/if}
 {#if game}
-    {#if !adContinued}
-        <div class="play">
-            {#if game}
-                <h2>{game.fName}</h2>
-                <p>{game.description}</p>
-                {#if commitHash.length > 0}
-                    <img
-                        class="img"
-                        alt={`Cover art for ${game.fName}`}
-                        src="https://cdn.jsdelivr.net/gh/ccported/games@{commitHash}/{game.gameID}{game.thumbPath}"
-                    />
-                    <div style="color: #aaa;">
-                        Build: {commitHash.slice(0, 7)}...{commitHash.slice(-7)}
-                    </div>
-                {:else}
-                    <div class="img"></div>
-                {/if}
-            {/if}
-            <button onclick={play}>Play Grades</button>
-        </div>
-        <div id="ad-container"></div>
-    {/if}
+    <div class="play">
+        <h2>{game.fName}</h2>
+        <p>{game.description}</p>
+        {#if commitHash.length > 0}
+            <img
+                class="img"
+                alt={`Cover art for ${game.fName}`}
+                src="https://cdn.jsdelivr.net/gh/ccported/games@{commitHash}/{game.gameID}{game.thumbPath}"
+            />
+            <div style="color: #aaa;">
+                Build: {commitHash.slice(0, 7)}...{commitHash.slice(-7)}
+            </div>
+        {:else}
+            <div class="img"></div>
+        {/if}
+        <button onclick={play}>Play Grades</button>
+    </div>
     <iframe
         src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}/index.html`}
         frameborder="0"
@@ -461,10 +337,6 @@
     <div class="container">
         <h2>Loading...</h2>
     </div>
-{/if}
-
-{#if adsEnabled && adSlots}
-    <Ad slotId={adSlots.footer} />
 {/if}
 
 <style>
@@ -523,14 +395,6 @@
         font-size: 16px;
         display: block;
         margin-top: 10px;
-    }
-    .adblock-warning {
-        background-color: white;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
     }
     iframe {
         position: fixed;

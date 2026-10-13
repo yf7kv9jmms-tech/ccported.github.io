@@ -1,7 +1,6 @@
 <script lang="ts">
     import {
         decamelize,
-        detectAdBlockEnabled,
         getCommitHash,
         openGame,
     } from "$lib/helpers.js";
@@ -14,17 +13,12 @@
     import type { Game } from "$lib/types/game.js";
     import { onMount } from "svelte";
     import GameCard from "./GameCard.svelte";
-    import Ad from "./Ad.svelte";
-    import { findAHosts } from "$lib/types/servers.js";
     import { browser } from "$app/environment";
     import { loadGames } from "$lib/loadCards.js";
     import { goto } from "$app/navigation";
-    import { initializeAds } from "$lib/adSlotConfig.js";
 
     let searchIsOpen = $state(false);
     let games = $state<Game[]>([]);
-    let adsEnabled = $state(false);
-    let adSlots = $state<{ sidebar: string; grid: string; footer: string } | null>(null);
 
     // Sort options
     type SortType = "default" | "az" | "za" | "clicksAsc" | "clicksDesc" | "new" | "old";
@@ -189,7 +183,6 @@
     }
 
     const searchRegex = /[a-z0-9]/i;
-    let adBlock = $state(false);
     let commitHash = $state("");
 
     onMount(async () => {
@@ -242,9 +235,6 @@
             }
         });
 
-        if (SessionState.ssr) return;
-
-        ({ adBlock, adsEnabled, adSlots } = await initializeAds());
     });
 
     $effect(() => {
@@ -330,13 +320,6 @@
     </div>
 </div>
 <div class="main-content-wrapper">
-    {#if adsEnabled && adSlots}
-        <div class="sidebar-ad left-sidebar">
-            <div class="xxx r">
-                <Ad slotId={adSlots.sidebar} />
-            </div>
-        </div>
-    {/if}
     <div class="container">
         <div class="sort-bar">
             <select id="sort-select" bind:value={sortType}>
@@ -401,56 +384,9 @@
                         toggleSearch(decamelize(tag));
                     }}
                 />
-                {#if adsEnabled && adSlots && (i + 1) % 10 === 0}
-                    <div class="inxxx agrid grid">
-                        <Ad slotId={adSlots.grid} />
-                    </div>
-                {/if}
-                {#if !adBlock && !adsEnabled}
-                    {#if (i + 1) % 10 === 0}
-                        <div class="inxxx agrid grid">
-                            <div
-                                style="text-align: center; font-size: 0.9rem; color: #555;width:100%;height:100%;display: flex;flex-direction: column;justify-content: center;align-items: center;"
-                            >
-                                <p>
-                                    Contact <a
-                                        href="mailto:ccported@ccported.click"
-                                        >ccported@ccported.click</a
-                                    > to advertise in this slot
-                                </p>
-                            </div>
-                            <!-- <script
-                                async
-                                type="application/javascript"
-                                src="https://a.magsrv.com/ad-provider.js"
-                            ></script>
-                            <ins
-                                class="eas6a97888e2"
-                                data-zoneid="5721174"
-                                data-keywords="grading,grades,flash,retro,arcade,html,unblocked,video,fun,entertainment"
-                            ></ins>
-                            <script>
-                                (AdProvider = window.AdProvider || []).push({
-                                    serve: {},
-                                });
-                            </script> -->
-                        </div>
-                    {/if}
-                {/if}
             {/each}
         </div>
     </div>
-    {#if adsEnabled && adSlots}
-        <div class="sidebar-ad right-sidebar">
-            <div class="xxx r">
-                <Ad slotId={adSlots.sidebar} />
-            </div>
-        </div>
-
-        <div class = "footer-ad">
-            <Ad slotId={adSlots.footer} />
-        </div>
-    {/if}
 </div>
 
 <style>
@@ -842,37 +778,7 @@
         width: 100%;
         gap: 20px;
     }
-    .sidebar-ad {
-        width: 300px;
-        flex-shrink: 0;
-        margin-top: 120px;
-    }
-
-    .inxxx.agrid.grid {
-        padding: 20px;
-        box-sizing: border-box;
-        max-height: 300px;
-    }
-    .inxx.agrid.grid::before {
-        content: "Ad Loading";
-        display: block;
-        text-align: center;
-        color: #888;
-        font-size: 0.9rem;
-        margin-bottom: 8px;
-        animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @media (max-width: 1800px) {
-        .sidebar-ad.right-sidebar {
-            display: none;
-        }
-    }
-
     @media (max-width: 1400px) {
-        .sidebar-ad {
-            display: none;
-        }
         .main-content-wrapper {
             justify-content: center;
         }

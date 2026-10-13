@@ -3,58 +3,15 @@
     import Locked from "$lib/components/Locked.svelte";
     import Navigation from "$lib/components/Navigation.svelte";
     import Info from "$lib/components/Info.svelte";
-    import { initializeTooling, SessionState, State } from "$lib/state.js";
+    import { initializeTooling } from "$lib/state.js";
     import { onMount } from "svelte";
     import { loadGames } from "$lib/loadCards.js";
     import { checkNotifications } from "$lib/checkNotifications.js";
-    import { browser } from "$app/environment";
-
-    let isAHost = $state(State.isAHost());
-    let devMode = $state(true);
-    let adblockEnabled = $state(SessionState.adBlockEnabled);
-    let adsEnabled = $state(SessionState.adsEnabled);
-    let streamingContent = $state("");
     onMount(async () => {
         await initializeTooling();
 
         // Don't wait up on this one (it can load in the background)
         checkNotifications();
-        isAHost = State.isAHost();
-
-        devMode = SessionState.devMode;
-        adblockEnabled = SessionState.adBlockEnabled;
-        adsEnabled = SessionState.adsEnabled;
-
-        function injectBadAds() {
-            const script = document.createElement("script");
-            script.type = "text/javascript";
-            script.async = true; // Dont wait up on script loading
-            script.defer = true; // Ensure the script is executed after the document has been parsed
-            script.src =
-                "//pl27945770.effectivegatecpm.com/b0/88/ed/b088ed7c9240db179822a126a078b258.js";
-            document.body.appendChild(script);
-        }
-        if ((!isAHost && !adblockEnabled) || SessionState.devMode) {
-            console.log("[R][LAYOUT][BASE] Bad Ads enabled");
-            injectBadAds();
-        } else {
-            if (isAHost && adsEnabled) {
-                console.log("[R][LAYOUT][BASE] Good ads enabled");
-            } else {
-                console.log("[R][LAYOUT][BASE] No ads");
-            }
-        }
-
-        // var chars = "~!@#$%^&*()_+{}|:'<>?`1234567890-=[]\\;/.,";
-
-        // if (browser && window.innerWidth > 800) {
-        //     setInterval(() => {
-        //         streamingContent +=
-        //             chars.split("")[Math.floor(Math.random() * chars.length)];
-
-        //         streamingContent = streamingContent.slice(-75);
-        //     }, 50);
-        // }
     });
 </script>
 
@@ -144,12 +101,9 @@
         </p>
         <p>
             "Commercial purposes" means any use that is intended for or directed
-            toward commercial advantage or monetary compensation, including but
-            not limited to: - Selling or licensing copies of the software, -
-            Hosting, operating, or distributing the software as part of a paid
-            service, - Using the software to generate revenue (advertising,
-            subscriptions, etc.), - Integrating the software into commercial
-            products or services.
+            toward commercial advantage or monetary compensation, including
+            selling or licensing copies of the software, hosting or distributing
+            it as part of a paid service, or using it to generate revenue.
         </p>
         <p>
             You may use, modify, and share this software freely for personal,

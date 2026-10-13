@@ -1,11 +1,8 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
-    import Ad from "$lib/components/Ad.svelte";
     import Navigation from "$lib/components/Navigation.svelte";
-    import { capitalizeWords, detectAdBlockEnabled } from "$lib/helpers.js";
+    import { capitalizeWords } from "$lib/helpers.js";
     import { initializeTooling, SessionState } from "$lib/state.js";
     import type { ROM } from "$lib/types/game.js";
-    import { findAHosts } from "$lib/types/servers.js";
     import { ListObjectsV2Command } from "@aws-sdk/client-s3";
     import { onMount } from "svelte";
 
@@ -24,20 +21,6 @@
             .split(/\s+/);
     }
 
-    let adSlots = $state<{ big: string; small: string } | null>(null);
-    let adBlock = $state(false);
-    let adsEnabled = $state(false);
-
-    const adSlotConfig = {
-        "ccported.github.io": {
-            big: "c024666e-e810-47df-833e-b260321b4d84",
-            small: "c2522ff2-7549-433b-a689-0cd63517722c",
-        },
-        "ccported.click": {
-            big: "dfa19ddf-2c4c-42ac-8056-3419d7b2ecf3",
-            small: "ce76eb8c-b859-4060-90bb-ba1089d73e67",
-        },
-    };
     async function listRoms() {
         if (!SessionState.s3Client) {
             await initializeTooling();
@@ -91,41 +74,6 @@
             loading = false;
         });
 
-        await detectAdBlockEnabled();
-        adBlock = SessionState.adBlockEnabled;
-        adsEnabled = SessionState.adsEnabled;
-
-        if (adsEnabled) {
-            const host = browser ? window.location.hostname : "<SSR_HOST>";
-            if (host in adSlotConfig) {
-                adSlots = adSlotConfig[host as keyof typeof adSlotConfig];
-            }
-
-            (async () => {
-                const aHosts = await findAHosts();
-                if (!aHosts) {
-                    adsEnabled = false;
-                    SessionState.adsEnabled = false;
-                    return;
-                }
-
-                const aHostData = aHosts.find((h) => h.hostname === host);
-                if (aHostData && aHostData.acode) {
-                    const scriptId = `ad-script-${aHostData.acode}`;
-                    if (document.getElementById(scriptId)) return; // Already loaded
-
-                    const script = document.createElement("script");
-                    script.id = scriptId;
-                    script.src = `//monu.delivery/site/${aHostData.acode}`;
-                    script.setAttribute("data-cfasync", "false");
-                    script.defer = true;
-                    document.head.appendChild(script);
-                } else {
-                    adsEnabled = false;
-                    SessionState.adsEnabled = false;
-                }
-            })();
-        }
     });
 
     function filterRoms(romArr: ROM[]) {
@@ -157,20 +105,10 @@
             bind:value={search}
             class="search"
         />
-        {#if adsEnabled && adSlots }
-            <div class = "big-ad">
-                <Ad slotId={adSlots.big} />
-            </div>
-        {/if}
         {#each Object.keys(roms) as console}
             {#if filterRoms(roms[console]).length}
                 <section>
                     <h2>{console.toUpperCase()}</h2>
-                    {#if adsEnabled && adSlots }
-                        <div class = "small-ad" style="margin-bottom: 12px;">
-                            <Ad slotId={adSlots.small} />
-                        </div>
-                    {/if}
                     <ul>
                         {#each filterRoms(roms[console]) as rom}
                             <li>

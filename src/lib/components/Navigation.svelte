@@ -1,6 +1,5 @@
 <script lang="ts">
     import { page } from "$app/state";
-    import { initializeAds } from "$lib/adSlotConfig.js";
     import { initializeTooling, SessionState } from "$lib/state.js";
     import { onMount } from "svelte";
 

@@ -39,8 +39,6 @@
     Browser: {browser ? navigator.userAgent : "<SSR_HOST>"}<br />
     Host: {browser ? window.location.hostname : "<SSR_HOST>"}<br />
     DevMode: {stateFulSessionState.devMode}<br />
-    AdBlock Enabled: {stateFulSessionState.adBlockEnabled}<br />
-    Ads Enabled: {stateFulSessionState.adsEnabled}<br />
     Current Server: {stateFulState.currentServer.name} (Loaded {stateFulState
         .servers.length})<br />
     <table
@@ -82,9 +80,6 @@
                 <th style="border-bottom: 1px solid #ccc; text-align: left;"
                     >AHost Hostname</th
                 >
-                <th style="border-bottom: 1px solid #ccc; text-align: left;"
-                    >ACode</th
-                >
             </tr>
         </thead>
         <tbody>
@@ -97,7 +92,6 @@
                             ? " (Active)"
                             : " (Inactive)"}</td
                     >
-                    <td>{h.acode}</td>
                 </tr>
             {/each}
         </tbody>

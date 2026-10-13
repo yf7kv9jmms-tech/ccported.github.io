@@ -2,7 +2,6 @@ import { SessionState } from "$lib/state.js";
 
 export interface AHost {
     hostname: string;
-    acode: string;
 }
 
 
@@ -17,11 +16,9 @@ export interface Server {
 
 
 export let AHosts: AHost[] = [{
-    hostname: "ccported.github.io",
-    acode: "e/4/500442-526a-41af-9981-22db9286cd37.js"
+    hostname: "ccported.github.io"
 }, {
-    hostname: "ccported.click",
-    acode: "5/2/0ff0b7-11f3-4bd8-b154-cfeed8597df1.js"
+    hostname: "ccported.click"
 }];
 export function setAHosts(ahosts: AHost[]) {
     AHosts = ahosts;
@@ -183,8 +180,7 @@ export const findAHosts = async (): Promise<AHost[]> => {
     const ahosts: AHost[] = lines.map((line) => {
         const parts = line.split(',').map(p => p.trim());
         return {
-            hostname: parts[0],
-            acode: parts[1]
+            hostname: parts[0]
         };
     });
     return ahosts;

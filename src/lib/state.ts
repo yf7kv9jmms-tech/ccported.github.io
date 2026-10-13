@@ -5,7 +5,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import type { Game } from "./types/game.js";
 import { browser } from '$app/environment';
 import { S3Client } from "@aws-sdk/client-s3";
-import { detectAdBlockEnabled } from "./helpers.js";
 import { page } from "$app/state";
 import { goto } from "$app/navigation";
 import type { User } from "oidc-client-ts";
@@ -62,8 +61,6 @@ function decodeJwt<T = any>(token?: string): T | null {
 export const SessionState = {
     awsReady: false,
     ssr: !browser,
-    adBlockEnabled: false,
-    adsEnabled: false,
     credentials: null as CognitoIdentityCredentials | null,
     dynamoDBClient: null as DynamoDBClient | null,
     s3Client: null as S3Client | null,
@@ -214,10 +211,6 @@ export async function initializeTooling() {
     setAHosts(aHosts);
     // State.currentServer is now managed by findServer()
 
-    const adBlock = await detectAdBlockEnabled();
-    SessionState.adBlockEnabled = adBlock;
-    SessionState.adsEnabled = !adBlock && State.isAHost();
-
     if (!State.isAHost()) {
         aHosts.forEach(async (host) => {
             const result = await testSingleServer({
@@ -228,7 +221,7 @@ export async function initializeTooling() {
                 protocol: browser && window.isSecureContext ? "https" : "http"
             });
             console.log(
-                `[R][CardGrid][Mount] Tested ad host ${host.hostname}:`,
+                `[R][CardGrid][Mount] Tested host ${host.hostname}:`,
                 result,
             );
             if (result.success) {

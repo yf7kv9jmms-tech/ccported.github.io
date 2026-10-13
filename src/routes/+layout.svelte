@@ -2,8 +2,7 @@
     import { browser } from "$app/environment";
     import { onMount } from "svelte";
     import ServerSwitcher from "$lib/components/ServerSwitcher.svelte";
-    import { initializeTooling, SessionState, State } from "$lib/state.js";
-    import Ad from "$lib/components/Ad.svelte";
+    import { initializeTooling } from "$lib/state.js";
 
     let { children } = $props();
 
@@ -16,19 +15,9 @@
 
     let idToUse = $state("");
     let useGA4 = $state(false);
-    let mounted = $state(false);
-    let adsEnabled = $state(false);
-    let adblockEnabled = $state(SessionState.adBlockEnabled);
-    let isAHost = $state(false);
-
     onMount(() => {
-        mounted = true;
         if (browser) {
-            initializeTooling().then(() => {
-                adsEnabled = SessionState.adsEnabled;
-                adblockEnabled = SessionState.adBlockEnabled;
-            });
-            isAHost = State.isAHost();
+            initializeTooling();
             let hostname = window.location.hostname;
             console.log("[R][LAYOUT][BASE] Hostname:", hostname);
 
@@ -57,7 +46,6 @@
             if (useGA4 && idToUse) {
                 injectGA4(idToUse);
             }
-
         }
     });
     function injectGA4(trackingId: string) {
