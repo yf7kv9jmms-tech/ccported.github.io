@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { resolve } from "$app/paths";
     import { page } from "$app/state";
     import { initializeTooling, SessionState } from "$lib/state.js";
     import { onMount } from "svelte";
@@ -50,20 +51,21 @@
 <div class="n-container">
     <nav>
         <ul class="left">
-            <li><a href="/">CCPorted</a></li>
+            <li><a href={resolve("/")}>CCPorted</a></li>
         </ul>
         <ul class="right desktop-links">
-            {#each links as [name, url]}
+            {#each links as [name, url] (url)}
                 <li class:active={currentPath === url}>
-                    <a
-                        href={url}
-                        target={url.startsWith("http") ? "_blank" : "_self"}
-                        rel={url.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined}
-                    >
-                        {name}
-                    </a>
+                    {#if url.startsWith("http")}
+                        <!-- svelte-ignore svelte/no-navigation-without-resolve -->
+                        <a href={url} target="_blank" rel="noopener noreferrer">
+                            {name}
+                        </a>
+                    {:else}
+                        <a href={resolve(url as Parameters<typeof resolve>[0])}>
+                            {name}
+                        </a>
+                    {/if}
                 </li>
             {/each}
         </ul>
@@ -102,18 +104,26 @@
                 aria-label="Close menu">&times;</button
             >
             <ul>
-                {#each links as [name, url]}
+                {#each links as [name, url] (url)}
                     <li class:active={currentPath === url}>
-                        <a
-                            href={url}
-                            target={url.startsWith("http") ? "_blank" : "_self"}
-                            rel={url.startsWith("http")
-                                ? "noopener noreferrer"
-                                : undefined}
-                            onclick={() => (menuOpen = false)}
-                        >
-                            {name}
-                        </a>
+                        {#if url.startsWith("http")}
+                            <!-- svelte-ignore svelte/no-navigation-without-resolve -->
+                            <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onclick={() => (menuOpen = false)}
+                            >
+                                {name}
+                            </a>
+                        {:else}
+                            <a
+                                href={resolve(url as Parameters<typeof resolve>[0])}
+                                onclick={() => (menuOpen = false)}
+                            >
+                                {name}
+                            </a>
+                        {/if}
                     </li>
                 {/each}
             </ul>

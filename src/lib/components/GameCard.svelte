@@ -1,8 +1,6 @@
 <script lang="ts">
     import { decamelize, formatNumber, openGame } from "$lib/helpers.js";
     import { State } from "$lib/state.js";
-    import { browser } from "$app/environment";
-
     import type { Game } from "../types/game.ts";
 
     const {
@@ -16,7 +14,6 @@
     } = $props();
 
     const gameID = $derived(game.gameID);
-    const thumbPath = $derived(game.thumbPath);
     const fName = $derived(game.fName);
     const description = $derived(game.description);
     const tags = $derived(game.tags ?? []);
@@ -27,10 +24,7 @@
     const normalThumbPath = $derived(
         `${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}${game.thumbPath}`,
     );
-    let starred = $state(false);
-    $effect(() => {
-        starred = State.pinnedGames.includes(game.gameID);
-    });
+    let starred = $state(State.pinnedGames.includes(game.gameID));
 
     let cardElement: HTMLDivElement;
     let isHovered = $state(false);
@@ -142,14 +136,14 @@
                 <p class="small-text">{formatNumber(clicks) ?? 0} Plays</p>
                 <p class="card-description">{description}</p>
                 <div class="card-tags">
-                    {#each tags as tag}
+                    {#each tags as tag, index (tag + index)}
                         <button
                             class="tag"
                             data-tag={tag}
                             onclick={(e) => {
                                 e.stopPropagation();
-                                tagClick(tag as string);
-                            }}>{decamelize(tag as string)}</button
+                                tagClick(tag);
+                            }}>{decamelize(tag)}</button
                         >
                     {/each}
                 </div>

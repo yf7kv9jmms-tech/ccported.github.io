@@ -1,3 +1,1 @@
-export interface AdConfig {
-    
-}
+export type AdConfig = Record<string, unknown>;

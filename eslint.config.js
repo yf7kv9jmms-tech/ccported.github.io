@@ -10,6 +10,17 @@ const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default ts.config(
 	includeIgnoreFile(gitignorePath),
+	{
+		ignores: [
+			'**/*.min.js',
+			'static/vendor/**',
+			'static/dos/js-dos.js',
+			'static/dos/js-dos/**',
+			'static/big_game_script.js',
+			'static/big_game_script.bak.js',
+			'static/upload/amazon_cognito_auth.min.js'
+		]
+	},
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
@@ -34,6 +45,12 @@ export default ts.config(
 				parser: ts.parser,
 				svelteConfig
 			}
+		}
+	},
+	{
+		files: ['server/**/*.js'],
+		rules: {
+			'@typescript-eslint/no-require-imports': 'off'
 		}
 	}
 );

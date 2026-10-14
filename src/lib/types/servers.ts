@@ -1,5 +1,3 @@
-import { SessionState } from "$lib/state.js";
-
 export interface Server { 
     name: string;
     hostname: string;

@@ -5,15 +5,12 @@
     } from "$lib/helpers.js";
     import {
         initializeTooling,
-        SessionState,
         State,
     } from "$lib/state.js";
     import type { Game } from "$lib/types/game.js";
     import { onMount } from "svelte";
     import GameCard from "./GameCard.svelte";
-    import { browser } from "$app/environment";
     import { loadGames } from "$lib/loadCards.js";
-    import { goto } from "$app/navigation";
 
     let searchIsOpen = $state(false);
     let games = $state<Game[]>([]);
@@ -298,7 +295,7 @@
                                 {#if result.game.tags && result.game.tags.length}
                                     &nbsp;|&nbsp;
                                     <span>
-                                        {#each result.game.tags as tag}
+                                        {#each result.game.tags as tag (tag)}
                                             <span
                                                 style="background: #eee; border-radius: 4px; padding: 2px 6px; margin-right: 4px; font-size: 0.8em;"
                                                 >{tag}</span
@@ -366,7 +363,7 @@
         </div>
         <div class="card-grid {State.homeView}">
             {#if games.length === 0}
-                {#each Array(12) as _, i}
+                {#each Array(12).keys() as i (i)}
                     <div class="load-shimmer">&nbsp;</div>
                 {/each}
             {/if}

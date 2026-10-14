@@ -1019,7 +1019,7 @@ window.ccPorted = window.ccPorted || {};
         if (typeof AWS == "undefined") {
             log("AWS SDK not loaded, loading...");
             const sdk = document.createElement("script");
-            sdk.src = "https://sdk.amazonaws.com/js/aws-sdk-2.1030.0.min.js";
+            sdk.src = "/vendor/aws-sdk.min.js";
             document.head.appendChild(sdk);
             await new Promise((r, rr) => {
                 log("Waiting for AWS SDK to load...");

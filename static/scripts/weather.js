@@ -49,7 +49,7 @@ async function getWeatherData() {
             });
             latitude = position.coords.latitude;
             longitude = position.coords.longitude;
-        } catch (error) {
+        } catch {
             console.log('Using default location (New York)');
         }
         window.pos = window.pos || {};
@@ -81,7 +81,7 @@ function updateUI(data) {
     // Update current weather
     const currentContainer = document.querySelector('#current div.l');
     currentContainer.innerHTML = `
-                <h2>Current Weather for ${data.city || "Unknown"}</h2>
+                <h2>Current Weather</h2>
                 <div class="temperature">${Math.round(data.current.temperature_2m)}${data.current_units.temperature_2m} (${otherUnit(data.current.temperature_2m, data.current_units.temperature_2m)})</div>
                 <div class="weather-icon">${weatherIcons[data.current.weather_code] || '❓'}</div>
                 <div class="conditions">
@@ -117,19 +117,11 @@ function showError(message) {
     errorDiv.textContent = message;
     container.insertBefore(errorDiv, container.firstChild);
 }
-async function getCity() {
-    console.log(window.pos)
-    const res = await fetch("https://geocode.maps.co/reverse?lat=" + window.pos.lat + "&lon=" + window.pos.long + "&api_key=678db629dd6e7593595140xwfa9064c");
-    const json = await res.json();
-    return json.address.town;
-}
 // Initialize the weather dashboard
 async function initWeather() {
     try {
         const wdata = await getWeatherData();
-        const city = await getCity();
-        const data = { ...wdata, city };
-        updateUI(data);
+        updateUI(wdata);
     } catch (error) {
         console.error('Error initializing weather:', error);
         showError(`Failed to load weather data. Please try again later (${error.message})`);
@@ -182,7 +174,7 @@ function renderChart(data) {
     // Load Chart.js if not already loaded
     if (typeof Chart === 'undefined') {
         const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.src = '/vendor/chart.umd.min.js';
         script.onload = () => drawChart();
         document.head.appendChild(script);
     } else {
@@ -215,8 +207,6 @@ function renderChart(data) {
 
         // Colors
         const tempColor = '#ff7e29';    // Warmer orange
-        const rainColor = '#4dabf7';    // Brighter blue
-
         window.weatherChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -391,11 +381,6 @@ function renderChart(data) {
     }
 }
 
-// Helper function to format dates
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { weekday: 'long' });
-}
 function findMax(arr) {
     return Math.max(...arr);
 }

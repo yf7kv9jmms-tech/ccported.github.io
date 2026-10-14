@@ -2,6 +2,7 @@
     import { initializeTooling, State } from "$lib/state.js";
     import { browser } from "$app/environment";
     import { onMount } from "svelte";
+    import { SvelteURL, SvelteURLSearchParams } from "svelte/reactivity";
     import type { Server } from "$lib/types/servers.js";
 
     let isOpen = $state(false);
@@ -48,9 +49,9 @@
         if (switchHost) {
             console.warn("[ServerSwitcher] Switching to a server with different security context. Reloading page.");
             // Add the Set Server query parameter to specify which server to use
-            const url = new URL(`${server.protocol}://${server.hostname}${window.location.pathname}`);
+            const url = new SvelteURL(`${server.protocol}://${server.hostname}${window.location.pathname}`);
             // Copy existing search parameters
-            const currentParams = new URLSearchParams(window.location.search);
+            const currentParams = new SvelteURLSearchParams(window.location.search);
             currentParams.set('SetServer', server.hostname);
             url.search = currentParams.toString();
             url.hash = window.location.hash;

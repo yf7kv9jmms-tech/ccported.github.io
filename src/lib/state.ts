@@ -1,12 +1,9 @@
-import { Servers, type Server, findServers, findSingleServer } from "./types/servers.js";
-import { CognitoIdentityClient } from "@aws-sdk/client-cognito-identity";
+import { Servers, type Server, findServers } from "./types/servers.js";
 import { fromCognitoIdentityPool, type CognitoIdentityCredentials } from "@aws-sdk/credential-provider-cognito-identity";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import type { Game } from "./types/game.js";
 import { browser } from '$app/environment';
 import { S3Client } from "@aws-sdk/client-s3";
-import { page } from "$app/state";
-import { goto } from "$app/navigation";
 import type { User } from "oidc-client-ts";
 import { createModal } from "$lib/modal.js";
 import { signinRequest } from "$lib/authentication.js";
@@ -33,7 +30,11 @@ function readStoredTokens(): Tokens | null {
 
 function clearStoredTokens() {
     if (!browser) return;
-    try { localStorage.removeItem(TOKEN_STORAGE_KEY); } catch {}
+    try {
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+    } catch {
+        return;
+    }
 }
 
 function isExpired(expiresAt?: number, skewSec = 60): boolean {
@@ -41,7 +42,7 @@ function isExpired(expiresAt?: number, skewSec = 60): boolean {
     return Date.now() >= (expiresAt - skewSec * 1000);
 }
 
-function decodeJwt<T = any>(token?: string): T | null {
+function decodeJwt<T = User["profile"]>(token?: string): T | null {
     if (!token) return null;
     try {
         const parts = token.split('.');
@@ -53,7 +54,7 @@ function decodeJwt<T = any>(token?: string): T | null {
                 .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
                 .join('')
         );
-        return JSON.parse(json);
+        return JSON.parse(json) as T;
     } catch {
         return null;
     }
@@ -68,7 +69,7 @@ export const SessionState = {
     serverResponses: [] as { server: Server; success: boolean; time: number, reason: string }[],
     plays: 0,
     user: null as null | {
-        profile?: any;
+        profile?: User["profile"];
         tokens?: Tokens;
     },
     loggedIn: false
@@ -90,7 +91,9 @@ function saveState() {
     if (SessionState.ssr) return;
 
     // Things we don't want to save
-    const { servers, games, ...serializable } = State;
+    const serializable = Object.fromEntries(
+        Object.entries(State).filter(([key]) => key !== "servers" && key !== "games"),
+    );
     localStorage.setItem("ccported_state", JSON.stringify(serializable));
 }
 
@@ -99,7 +102,7 @@ function createState(initial: StateType): StateType {
     loadState(initial);
     return new Proxy(initial, {
         set(target, prop, value) {
-            (target as any)[prop] = value;
+            Reflect.set(target, prop, value);
             saveState();
             return true;
         }
@@ -169,14 +172,18 @@ export async function initializeTooling() {
                             label: 'Log in',
                             onClick: () => {
                                 // Attempt a fresh sign-in redirect
-                                try { signinRequest(new URL(window.location.href)); } catch {}
+                                try {
+                                    signinRequest(new URL(window.location.href));
+                                } catch (error) {
+                                    console.error("Unable to start sign-in", error);
+                                }
                             }
                         },
                         {
                             label: 'Continue without login',
                             onClick: (api) => {
                                 clearStoredTokens();
-                                SessionState.user = null as any;
+                                SessionState.user = null;
                                 SessionState.loggedIn = false;
                                 api.close();
                             }
@@ -191,7 +198,7 @@ export async function initializeTooling() {
                 }
                 SessionState.user.tokens = storedTokens;
                 if (profile) {
-                    SessionState.user.profile = profile as any;
+                    SessionState.user.profile = profile;
                     SessionState.loggedIn = true;
                 }
             }
@@ -484,8 +491,7 @@ export async function findBestServer(): Promise<Server | null> {
     }
 
     // Sort by priority (lower number = higher priority)
-    interface SortedServer extends Server { }
-    const sortedServers: SortedServer[] = servers.sort((a: Server, b: Server) => a.priority - b.priority);
+    const sortedServers = servers.sort((a: Server, b: Server) => a.priority - b.priority);
 
     console.log("[STATE][findBestServer] Testing servers concurrently...");
 
@@ -533,8 +539,7 @@ export async function findServerWithSmartWait(): Promise<Server | null> {
     }
 
     // Sort by priority
-    interface SortedServer extends Server { }
-    const sortedServers: SortedServer[] = servers.sort((a: Server, b: Server) => a.priority - b.priority);
+    const sortedServers = servers.sort((a: Server, b: Server) => a.priority - b.priority);
     const highestPriority = sortedServers[0]?.priority || 1;
 
     console.log("[STATE][findServer] Testing servers concurrently...");
@@ -625,7 +630,7 @@ async function initializeUnauthenticated() {
 
     const identityPoolId = "us-west-2:8ffe94a1-9042-4509-8e65-4efe16e61e3e";
     const credentials = fromCognitoIdentityPool({
-        client: new CognitoIdentityClient({ region: "us-west-2" }),
+        clientConfig: { region: "us-west-2" },
         identityPoolId
     });
 

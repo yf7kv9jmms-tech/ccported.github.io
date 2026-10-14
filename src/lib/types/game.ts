@@ -17,4 +17,4 @@ export interface ROM {
 
 }
 
-export interface Tag extends String {};
+export type Tag = string;

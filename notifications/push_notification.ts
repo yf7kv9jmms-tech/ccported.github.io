@@ -3,7 +3,7 @@ const notificationJSONFilePath = process.argv[2] || "notification.json";
 
 import * as fsp from 'fs/promises';
 import * as fs from 'fs';
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 
 
 async function main () {
@@ -20,9 +20,14 @@ async function main () {
     const id = uuid();
 
 
-    const command = (id: string, title: string, body: string, expires: number, cta: any): string => {
-        const ctaText = typeof cta === 'object' && cta.text ? cta.text : (typeof cta === 'string' ? cta : '');
-        const ctaLink = typeof cta === 'object' && cta.url ? cta.url : '';
+    const command = (id: string, title: string, body: string, expires: number, cta: unknown): string => {
+        const ctaObject = typeof cta === 'object' && cta !== null
+            ? cta as { text?: unknown; url?: unknown }
+            : null;
+        const ctaText = typeof ctaObject?.text === 'string'
+            ? ctaObject.text
+            : typeof cta === 'string' ? cta : '';
+        const ctaLink = typeof ctaObject?.url === 'string' ? ctaObject.url : '';
         
         fs.writeFileSync("values.json", JSON.stringify({ 
             notification_id: { "S": id },
@@ -37,7 +42,7 @@ async function main () {
         --item file://values.json`
     }
 
-    let c = command(id, title, body, expires, cta);
+    const c = command(id, title, body, expires, cta);
     console.log(">>>>", c);
     execSync(c.split("\n").map(s => s.trim()).join(" "));
     console.log("Finished", title);

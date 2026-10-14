@@ -38,6 +38,5 @@ export async function loadGames(): Promise<Game[]> {
         }
     }
     SessionState.plays = State.games.reduce((a, v) => a + v.clicks, 0);
-    State.games = State.games;
     return State.games;
 }

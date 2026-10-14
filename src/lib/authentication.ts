@@ -10,7 +10,7 @@ export interface Tokens {
 
 
 let userManager: UserManager | null = null;
-export function createUserManager(origin: String) {
+export function createUserManager(origin: string) {
     if (userManager) {
         return userManager;
     }

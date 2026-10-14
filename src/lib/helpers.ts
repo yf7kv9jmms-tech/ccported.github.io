@@ -54,7 +54,7 @@ export function capitalizeWords(str: string): string {
     ).join(' ');
 };
 
-export async function importJSON(path: string): Promise<any> {
+export async function importJSON(path: string): Promise<unknown> {
     const res = await fetch(path);
     if (!res.ok) {
         throw new Error(`Failed to load JSON from ${path}: ${res.status} ${res.statusText}`);

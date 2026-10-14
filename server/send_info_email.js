@@ -13,7 +13,7 @@ const client = new SESClient({
 const recipients = [];
 
 async function getRecipients() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         fs.createReadStream("C:/Users/andre/Downloads/template (1).csv")
             .pipe(csv())
             .on('data', (row) => {

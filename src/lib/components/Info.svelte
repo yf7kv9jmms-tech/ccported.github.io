@@ -1,7 +1,6 @@
 <script lang="ts">
     import { initializeTooling, SessionState, State } from "$lib/state.js";
     import { browser } from "$app/environment";
-    import { page } from "$app/state";
     import { onMount } from "svelte";
 
     let stateFulState = $state(State);
@@ -21,7 +20,7 @@
                 } else {
                     version = "Error fetching version";
                 }
-            } catch (e) {
+            } catch {
                 version = "Error fetching version";
             }
         }
@@ -61,7 +60,7 @@
             </tr>
         </thead>
         <tbody>
-            {#each stateFulSessionState.serverResponses as r}
+            {#each stateFulSessionState.serverResponses as r (r.server.hostname)}
                 <tr>
                     <td>{r.server.name}</td>
                     <td>{r.success ? "Success" : "Failed"}</td>
