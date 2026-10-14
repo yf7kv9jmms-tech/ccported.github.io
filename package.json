@@ -4,7 +4,7 @@
 	"scripts": {
 		"predev": "node scripts/copy-vendor-assets.mjs",
 		"dev": "vite dev",
-		"prebuild": "node scripts/copy-vendor-assets.mjs && node scripts/mirror-games.mjs",
+		"prebuild": "node scripts/copy-vendor-assets.mjs",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",

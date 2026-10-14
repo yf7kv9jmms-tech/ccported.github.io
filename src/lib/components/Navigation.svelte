@@ -1,6 +1,5 @@
 <script lang="ts">
-    /* eslint-disable svelte/no-navigation-without-resolve -- links are supplied dynamically at runtime */
-    import { base, resolve } from "$app/paths";
+    import { resolve } from "$app/paths";
     import { page } from "$app/state";
     import { initializeTooling, SessionState } from "$lib/state.js";
     import { onMount } from "svelte";
@@ -58,11 +57,12 @@
             {#each links as [name, url] (url)}
                 <li class:active={currentPath === url}>
                     {#if url.startsWith("http")}
+                        <!-- svelte-ignore svelte/no-navigation-without-resolve -->
                         <a href={url} target="_blank" rel="noopener noreferrer">
                             {name}
                         </a>
                     {:else}
-                        <a href={`${base}${url}`}>
+                        <a href={resolve(url as Parameters<typeof resolve>[0])}>
                             {name}
                         </a>
                     {/if}
@@ -107,6 +107,7 @@
                 {#each links as [name, url] (url)}
                     <li class:active={currentPath === url}>
                         {#if url.startsWith("http")}
+                            <!-- svelte-ignore svelte/no-navigation-without-resolve -->
                             <a
                                 href={url}
                                 target="_blank"
@@ -117,7 +118,7 @@
                             </a>
                         {:else}
                             <a
-                                href={`${base}${url}`}
+                                href={resolve(url as Parameters<typeof resolve>[0])}
                                 onclick={() => (menuOpen = false)}
                             >
                                 {name}

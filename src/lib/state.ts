@@ -7,7 +7,6 @@ import { S3Client } from "@aws-sdk/client-s3";
 import type { User } from "oidc-client-ts";
 import { createModal } from "$lib/modal.js";
 import { signinRequest } from "$lib/authentication.js";
-import { loadLocalGameManifest } from "$lib/gameAssets.js";
 
 
 interface Tokens {
@@ -132,8 +131,6 @@ export async function initializeTooling() {
         return;
     }
     initializingTooling = true;
-
-    await loadLocalGameManifest();
 
     // Handle SetServer query parameter
     if (browser && window) {

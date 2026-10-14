@@ -8,6 +8,7 @@ node_modules
 /.svelte-kit
 /build
 /dist
+/static/emdata/
 /static/mirrored-games/
 /static/mirrored-games.json
 
