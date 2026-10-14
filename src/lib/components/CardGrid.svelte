@@ -11,6 +11,7 @@
     import { onMount } from "svelte";
     import GameCard from "./GameCard.svelte";
     import { loadGames } from "$lib/loadCards.js";
+    import { gameAssetUrl } from "$lib/gameAssets.js";
 
     let searchIsOpen = $state(false);
     let games = $state<Game[]>([]);
@@ -281,7 +282,7 @@
                         onclick={() => openGame(result.game)}
                     >
                         <img
-                            src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${result.game.gameID}${result.game.thumbPath}`}
+                            src={gameAssetUrl(result.game.gameID, result.game.thumbPath, State.currentServer)}
                             alt={result.game.fName}
                         />
                         <div style="flex: 1;">

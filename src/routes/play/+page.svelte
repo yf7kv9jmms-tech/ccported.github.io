@@ -14,6 +14,7 @@
     import { trackClick } from "$lib/helpers.js";
     import { browser } from "$app/environment";
     import type { Tokens } from "$lib/authentication.js";
+    import { gameAssetUrl } from "$lib/gameAssets.js";
 
     let game: Game | null = $state(null);
     let error: string | null = $state(null);
@@ -304,12 +305,12 @@
         <img
             class="img"
             alt={`Cover art for ${game.fName}`}
-            src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}${game.thumbPath}`}
+            src={gameAssetUrl(game.gameID, game.thumbPath, State.currentServer)}
         />
         <button onclick={play}>Play Grades</button>
     </div>
     <iframe
-        src={`${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}/index.html`}
+        src={gameAssetUrl(game.gameID, "/index.html", State.currentServer)}
         frameborder="0"
         allowfullscreen
         bind:this={iframe}

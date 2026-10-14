@@ -1,6 +1,8 @@
 <script lang="ts">
     import { decamelize, formatNumber, openGame } from "$lib/helpers.js";
     import { State } from "$lib/state.js";
+    import { gameAssetUrl } from "$lib/gameAssets.js";
+    import { onMount } from "svelte";
     import type { Game } from "../types/game.ts";
 
     const {
@@ -22,9 +24,12 @@
     const updatedTimestamp = $derived(game.updatedTimestamp ?? 0);
 
     const normalThumbPath = $derived(
-        `${State.currentServer.protocol}://${State.currentServer.hostname}${State.currentServer.path}${game.gameID}${game.thumbPath}`,
+        gameAssetUrl(game.gameID, game.thumbPath, State.currentServer),
     );
-    let starred = $state(State.pinnedGames.includes(game.gameID));
+    let starred = $state(false);
+    onMount(() => {
+        starred = State.pinnedGames.includes(game.gameID);
+    });
 
     let cardElement: HTMLDivElement;
     let isHovered = $state(false);
