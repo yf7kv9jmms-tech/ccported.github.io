@@ -1,0 +1,3 @@
+[submodule "vendor/emdata"]
+	path = vendor/emdata
+	url = https://github.com/ccported/emdata.git
